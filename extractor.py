@@ -101,7 +101,7 @@ def main():
 
     # loop through each row in matrix, and all article number
     for i in range(len(matrix_array)):
-        new_array.append(np.concatenate((np.asarray(["{} article {}".format(keys[i // num_articles], (i % 10) + 1)]), matrix_array[i])))
+        new_array.append(np.concatenate((np.asarray(["{} article {}".format(keys[i // num_articles], (i % num_topics) + 1)]), matrix_array[i])))
 
     # concatenate header array with the rest of the DTM
     csv_array = np.concatenate(([header], new_array))
