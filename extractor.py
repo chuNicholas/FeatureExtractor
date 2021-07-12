@@ -30,7 +30,7 @@ def folder_selector():
 # convert html to text
 def html_to_text(text_file):
     text = ""
-    with open(text_file, encoding="utf8") as fp:
+    with open(text_file, encoding="utf-8") as fp:
         soup = BeautifulSoup(fp, "lxml")
         for words in soup.find_all("p"):
             text += words.get_text() + " "
@@ -101,7 +101,7 @@ def main():
 
     # loop through each row in matrix, and all article number
     for i in range(len(matrix_array)):
-        new_array.append(np.concatenate((np.asarray(["{} article {}".format(keys[i // num_articles], (i % num_topics) + 1)]), matrix_array[i])))
+        new_array.append(np.concatenate((np.asarray(["{} article {}".format(keys[i // num_articles], (i % num_articles) + 1)]), matrix_array[i])))
 
     # concatenate header array with the rest of the DTM
     csv_array = np.concatenate(([header], new_array))
