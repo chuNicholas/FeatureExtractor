@@ -74,7 +74,7 @@ def main():
         thread.join()
 
     # scikit learn Feature Extraction library
-    vectorizer = CountVectorizer()
+    vectorizer = CountVectorizer(stop_words="english")
 
     # put the articles in one array
     articles_list = []
@@ -107,7 +107,7 @@ def main():
     csv_array = np.concatenate(([header], new_array))
 
     # save to csv
-    np.savetxt("document-term-matrix.csv", csv_array , delimiter = ",", fmt="%s")
+    np.savetxt("document-term-matrix.csv", csv_array , delimiter = ",", fmt="%s", encoding="utf-8")
 
     end = time.time()
     print("Elapsed time: {:.2f} seconds".format(end - start))
