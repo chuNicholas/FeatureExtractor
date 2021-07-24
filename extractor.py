@@ -30,6 +30,7 @@ def folder_selector():
 # convert html to text
 def html_to_text(text_file):
     text = ""
+    # parses the paragraph tag and converts it into text
     with open(text_file, encoding="utf-8") as fp:
         soup = BeautifulSoup(fp, "lxml")
         for words in soup.find_all("p"):
@@ -56,13 +57,18 @@ def main():
     dataset = folder_selector()
 
     # create a dictionary. will store an list of the text from the articles
+    # key: folder name or classification target
+    # value: list of text from the articles in the folder key
     global articles
     articles = {folder : [] for folder in os.listdir(dataset)}
 
+    # sort the keys
     keys = sorted(articles)
     i = 0
     threads = []
+    # loop through the article folders
     while i < len(articles):
+        # convert the html files to text and add text to list
         while i < len(articles) and threading.activeCount() <= MAX_THREADS:
             thread = threading.Thread(target=parse_folder, args=(keys[i], folder_path(dataset, keys[i])))
             threads.append(thread)
@@ -74,6 +80,7 @@ def main():
         thread.join()
 
     # scikit learn Feature Extraction library
+    # will help us generate document-term matrix
     vectorizer = CountVectorizer(stop_words="english")
 
     # put the articles in one array
@@ -81,7 +88,7 @@ def main():
     for key in keys:
         articles_list += articles[key]
 
-    # create the model
+    # tokenize the text, fit the data to the training set
     matrix = vectorizer.fit_transform(articles_list)
 
     # convert to numpy array
@@ -91,6 +98,7 @@ def main():
     header = np.asarray(vectorizer.get_feature_names())
 
     # add filler blank for header
+    # add a title to the matrix
     header = np.concatenate((["Articles: {} \\Terms: {}".format(len(articles_list), len(header))], header))
 
     new_array = []
@@ -99,7 +107,8 @@ def main():
     num_articles = len(articles_list) // len(keys)
     num_topics = len(keys)
 
-    # loop through each row in matrix, and all article number
+    # loop through each row in matrix, and add the article number
+    # to the first column in each row with the corresponding folder name
     for i in range(len(matrix_array)):
         new_array.append(np.concatenate((np.asarray(["{} article {}".format(keys[i // num_articles], (i % num_articles) + 1)]), matrix_array[i])))
 
